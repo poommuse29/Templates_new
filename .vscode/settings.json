@@ -1,0 +1,26 @@
+{
+    // ตั้งค่า file association ให้ .html เป็น html ปกติ เพื่อให้ Prettier จัดรูปแบบได้
+    "files.associations": {
+        "*.html": "html"
+    },
+
+    // เปิด format on save
+    "editor.formatOnSave": true,
+
+    // ตั้งค่า default formatter เป็น Prettier สำหรับ html
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+
+    // Python settings
+    "python.defaultInterpreterPath": "d:\\Progamming\\Django\\template\\env\\Scripts\\python.exe",
+
+    // ตั้งค่า Pylance ให้หา Django module เจอ
+    "python.analysis.extraPaths": [
+        "d:\\Progamming\\Django\\template"
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    }
+}
