@@ -1,17 +1,28 @@
 {
-    // ตั้งค่า file association ให้ .html เป็น html ปกติ เพื่อให้ Prettier จัดรูปแบบได้
+    // ตั้งค่า file association ให้ .html เป็น django-html เพื่อให้มีสีไฮไลต์ Syntax Django
     "files.associations": {
-        "*.html": "html"
+        "*.html": "django-html"
     },
 
     // เปิด format on save
     "editor.formatOnSave": true,
 
-    // ตั้งค่า default formatter เป็น Prettier สำหรับ html
-    "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // ใช้ตัวจัดฟอร์แมต djLint สำหรับ django-html
+    "[django-html]": {
+        "editor.defaultFormatter": "monosans.djlint",
         "editor.formatOnSave": true
     },
+
+    // ตั้งค่าการทำงานของ djLint
+    "djlint.executablePath": "d:\\Progamming\\Django\\template\\env\\Scripts\\djlint.exe",
+    "djlint.useVenv": false,
+
+    // เปิดใช้งาน Emmet ในไฟล์ django-html
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+
+
 
     // Python settings
     "python.defaultInterpreterPath": "d:\\Progamming\\Django\\template\\env\\Scripts\\python.exe",

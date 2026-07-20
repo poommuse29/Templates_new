@@ -2,7 +2,14 @@ from django.shortcuts import render, HttpResponse
 
 
 def index(request):
-    return render(request, "index.html")
+    import datetime
+
+    context = {
+        "title": "My Home Page",
+    }
+
+    context["date"] = datetime.date.today()
+    return render(request, "index.html", context)
 
 
 def about(request):

@@ -75,8 +75,16 @@ WSGI_APPLICATION = 'mytemplates.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'neondb',
+        'USER': 'neondb_owner',
+        'PASSWORD': 'npg_U3VB8rdpDois',
+        'HOST': 'ep-quiet-silence-az85wnqi-pooler.c-3.ap-southeast-1.aws.neon.tech',
+        'PORT': '',
+        'OPTIONS': {
+            'sslmode': 'require',
+            'channel_binding': 'require',
+        },
     }
 }
 
