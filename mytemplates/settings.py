@@ -11,20 +11,25 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gv=nnc34c=&_tw*=e#mrq%0sc_6rb86+q%s!2p%b&1e!hgv7v$'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-gv=nnc34c=&_tw*=e#mrq%0sc_6rb86+q%s!2p%b&1e!hgv7v$')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 
@@ -38,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main',
 ]
 
 MIDDLEWARE = [
@@ -74,18 +80,16 @@ WSGI_APPLICATION = 'mytemplates.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'neondb',
-        'USER': 'neondb_owner',
-        'PASSWORD': 'npg_U3VB8rdpDois',
-        'HOST': 'ep-quiet-silence-az85wnqi-pooler.c-3.ap-southeast-1.aws.neon.tech',
-        'PORT': '',
-        'OPTIONS': {
-            'sslmode': 'require',
-            'channel_binding': 'require',
-        },
-    }
+    'default': dj_database_url.config(
+        default='postgres://neondb_owner:npg_U3VB8rdpDois@ep-quiet-silence-az85wnqi-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb',
+        conn_max_age=600,
+    )
+}
+
+# Keep the custom options if needed (Neon requires SSL)
+DATABASES['default']['OPTIONS'] = {
+    'sslmode': 'require',
+    'channel_binding': 'require',
 }
 
 
