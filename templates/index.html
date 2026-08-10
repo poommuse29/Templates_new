@@ -12,14 +12,14 @@
                 <th scope="col">Prefix</th>
                 <th scope="col">First</th>
                 <th scope="col">Last</th>
-                <th scope="col">Major</th>
+                <th scope="col">Majors</th>
             </tr>
         </thead>
         <tbody>
             {% for student in students %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ student.st_id }}</td>
+                    <td><a href= "{% url 'student_detail' pk=student.pk %}">{{ student.st_id }}</a></td>
                     <td>{{ student.get_prefix_name_display }}</td>
                     <td>{{ student.fname }}</td>
                     <td>{{ student.lname }}</td>

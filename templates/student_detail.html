@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="m-4">{{ title }}</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    </ol>
+    <h1>{{ student.st_id }}</h1>
+    <br />
+    <h1>{{ student.get_prefix_name_display }} {{ student.fname }} {{ student.lname }}</h1>
+    <br />
+    <h1>{{ student.major.mj_name }}</h1>
+{% endblock %}

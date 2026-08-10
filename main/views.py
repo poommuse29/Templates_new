@@ -24,7 +24,7 @@ def contact(request):
 
 
 def student_detail(request, pk):
-    student = Student.objects.get(st_id=pk)
+    student = Student.objects.get(pk=pk)
     context = {"student": student}
     return render(request, "student_detail.html", context)
 
