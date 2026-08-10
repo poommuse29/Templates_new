@@ -12,6 +12,7 @@
                 <th scope="col">Prefix</th>
                 <th scope="col">First</th>
                 <th scope="col">Last</th>
+                <th scope="col">Major</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,7 @@
                     <td>{{ student.get_prefix_name_display }}</td>
                     <td>{{ student.fname }}</td>
                     <td>{{ student.lname }}</td>
+                    <td>{{ student.major }}</td>
                 </tr>
             {% endfor %}
         </tbody>
