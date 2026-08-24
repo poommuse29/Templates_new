@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 from .models import Student, Major
 from .forms import StudentForm
 
@@ -17,6 +18,8 @@ class StudentCRUDTests(TestCase):
             lname="TestLast",
             major=self.major,
         )
+        # Create a user for authentication tests
+        self.user = User.objects.create_user(username="testuser", password="password")
 
     def test_student_form_valid(self):
         form_data = {
@@ -42,17 +45,28 @@ class StudentCRUDTests(TestCase):
         self.assertIn("st_id", form.errors)
 
     def test_student_list_view(self):
+        # List view should be public
         response = self.client.get(reverse("student_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "64010001")
         self.assertContains(response, "TestFirst")
 
-    def test_student_create_view_get(self):
+    def test_student_create_view_get_unauthenticated(self):
+        response = self.client.get(reverse("student_create"))
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next={reverse('student_create')}",
+            target_status_code=404,
+        )
+
+    def test_student_create_view_get_authenticated(self):
+        self.client.force_login(self.user)
         response = self.client.get(reverse("student_create"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "student_form.html")
 
-    def test_student_create_view_post(self):
+    def test_student_create_view_post_authenticated(self):
+        self.client.force_login(self.user)
         data = {
             "prefix_name": "นางสาว",
             "st_id": "64010003",
@@ -64,14 +78,26 @@ class StudentCRUDTests(TestCase):
         self.assertRedirects(response, reverse("student_list"))
         self.assertTrue(Student.objects.filter(st_id="64010003").exists())
 
-    def test_student_update_view_get(self):
+    def test_student_update_view_get_unauthenticated(self):
+        response = self.client.get(
+            reverse("student_update", kwargs={"pk": self.student.pk})
+        )
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next={reverse('student_update', kwargs={'pk': self.student.pk})}",
+            target_status_code=404,
+        )
+
+    def test_student_update_view_get_authenticated(self):
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse("student_update", kwargs={"pk": self.student.pk})
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "64010001")
 
-    def test_student_update_view_post(self):
+    def test_student_update_view_post_authenticated(self):
+        self.client.force_login(self.user)
         data = {
             "prefix_name": "นาง",
             "st_id": "64010001",
@@ -87,17 +113,30 @@ class StudentCRUDTests(TestCase):
         self.assertEqual(self.student.fname, "UpdatedFirst")
         self.assertEqual(self.student.prefix_name, "นาง")
 
-    def test_student_delete_view_get(self):
+    def test_student_delete_view_get_unauthenticated(self):
+        response = self.client.get(
+            reverse("student_delete", kwargs={"pk": self.student.pk})
+        )
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next={reverse('student_delete', kwargs={'pk': self.student.pk})}",
+            target_status_code=404,
+        )
+
+    def test_student_delete_view_get_authenticated(self):
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse("student_delete", kwargs={"pk": self.student.pk})
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "student_confirm_delete.html")
 
-    def test_student_delete_view_post(self):
+    def test_student_delete_view_post_authenticated(self):
+        self.client.force_login(self.user)
         response = self.client.post(
             reverse("student_delete", kwargs={"pk": self.student.pk})
         )
         self.assertRedirects(response, reverse("student_list"))
         self.assertFalse(Student.objects.filter(pk=self.student.pk).exists())
+
 

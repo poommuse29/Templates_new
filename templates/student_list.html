@@ -11,9 +11,11 @@
             <div class="h5 mb-0">
                 <i class="fas fa-table me-2"></i>ตารางรายชื่อนักศึกษา
             </div>
+            {% if user.is_authenticated %}
             <a href="{% url 'student_create' %}" class="btn btn-success btn-sm font-weight-bold">
                 <i class="fas fa-user-plus me-1"></i> เพิ่มนักศึกษา
             </a>
+            {% endif %}
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -26,7 +28,9 @@
                             <th scope="col" style="width: 20%">ชื่อจริง</th>
                             <th scope="col" style="width: 20%">นามสกุล</th>
                             <th scope="col" style="width: 15%">สาขาวิชา</th>
+                            {% if user.is_authenticated %}
                             <th scope="col" style="width: 10%" class="text-center">จัดการ</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +46,7 @@
                                 <td>{{ student.fname }}</td>
                                 <td>{{ student.lname }}</td>
                                 <td>{{ student.major.mj_name }}</td>
+                                {% if user.is_authenticated %}
                                 <td>
                                     <div class="d-flex justify-content-center gap-1">
                                         <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-sm btn-outline-primary" title="แก้ไข">
@@ -52,10 +57,11 @@
                                         </a>
                                     </div>
                                 </td>
+                                {% endif %}
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">
+                                <td colspan="{% if user.is_authenticated %}7{% else %}6{% endif %}" class="text-center py-4 text-muted">
                                     <i class="fas fa-info-circle me-1"></i> ยังไม่มีข้อมูลนักศึกษาในระบบ
                                 </td>
                             </tr>

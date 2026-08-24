@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import logout as django_logout
+from django.contrib.auth.decorators import login_required
 from .models import Student, Major
 from .forms import StudentForm
 import datetime
@@ -47,7 +49,12 @@ def student_list(request):
     return render(request, "student_list.html", context)
 
 
+@login_required
 def student_create(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "กรุณาเข้าสู่ระบบก่อนดำเนินการ")
+        return redirect("student_list")
+
     if request.method == "POST":
         form = StudentForm(request.POST)
         if form.is_valid():
@@ -58,9 +65,7 @@ def student_create(request):
             )
             return redirect("student_list")
         else:
-            messages.error(
-                request, "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาตรวจสอบอีกครั้ง"
-            )
+            messages.error(request, "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาตรวจสอบอีกครั้ง")
     else:
         form = StudentForm()
 
@@ -72,7 +77,12 @@ def student_create(request):
     return render(request, "student_form.html", context)
 
 
+@login_required
 def student_update(request, pk):
+    if not request.user.is_authenticated:
+        messages.error(request, "กรุณาเข้าสู่ระบบก่อนดำเนินการ")
+        return redirect("student_list")
+
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
         form = StudentForm(request.POST, instance=student)
@@ -84,9 +94,7 @@ def student_update(request, pk):
             )
             return redirect("student_list")
         else:
-            messages.error(
-                request, "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาตรวจสอบอีกครั้ง"
-            )
+            messages.error(request, "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาตรวจสอบอีกครั้ง")
     else:
         form = StudentForm(instance=student)
 
@@ -99,14 +107,17 @@ def student_update(request, pk):
     return render(request, "student_form.html", context)
 
 
+@login_required
 def student_delete(request, pk):
+    if not request.user.is_authenticated:
+        messages.error(request, "กรุณาเข้าสู่ระบบก่อนดำเนินการ")
+        return redirect("student_list")
+
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
         name = f"{student.fname} {student.lname}"
         student.delete()
-        messages.success(
-            request, f"ลบข้อมูลนักศึกษา {name} สำเร็จเรียบร้อยแล้ว!"
-        )
+        messages.success(request, f"ลบข้อมูลนักศึกษา {name} สำเร็จเรียบร้อยแล้ว!")
         return redirect("student_list")
 
     context = {
@@ -114,4 +125,33 @@ def student_delete(request, pk):
         "student": student,
     }
     return render(request, "student_confirm_delete.html", context)
+
+
+def logout_view(request):
+    django_logout(request)
+    messages.success(request, "ออกจากระบบสำเร็จแล้ว!")
+    return redirect("home")
+
+
+def register_view(request):
+    if request.method == "POST":
+        from django.contrib.auth.forms import UserCreationForm
+
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "สมัครสมาชิกสำเร็จแล้ว! กรุณาเข้าสู่ระบบ")
+            return redirect("login")
+        else:
+            messages.error(request, "เกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง")
+    else:
+        from django.contrib.auth.forms import UserCreationForm
+
+        form = UserCreationForm()
+
+    context = {
+        "title": "สมัครสมาชิก (Register)",
+        "form": form,
+    }
+    return render(request, "register.html", context)
 
