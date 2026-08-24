@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mt-4">{{ title }}</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Students</li>
+    </ol>
+
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between py-3">
+            <div class="h5 mb-0">
+                <i class="fas fa-table me-2"></i>ตารางรายชื่อนักศึกษา
+            </div>
+            <a href="{% url 'student_create' %}" class="btn btn-success btn-sm font-weight-bold">
+                <i class="fas fa-user-plus me-1"></i> เพิ่มนักศึกษา
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="datatablesSimple" class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 5%">#</th>
+                            <th scope="col" style="width: 15%">รหัสนักศึกษา</th>
+                            <th scope="col" style="width: 15%">คำนำหน้า</th>
+                            <th scope="col" style="width: 20%">ชื่อจริง</th>
+                            <th scope="col" style="width: 20%">นามสกุล</th>
+                            <th scope="col" style="width: 15%">สาขาวิชา</th>
+                            <th scope="col" style="width: 10%" class="text-center">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="{% url 'student_detail' pk=student.pk %}" class="text-decoration-none fw-bold text-primary">
+                                        {{ student.st_id }}
+                                    </a>
+                                </td>
+                                <td><span class="badge bg-secondary">{{ student.get_prefix_name_display }}</span></td>
+                                <td>{{ student.fname }}</td>
+                                <td>{{ student.lname }}</td>
+                                <td>{{ student.major.mj_name }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-sm btn-outline-primary" title="แก้ไข">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'student_delete' pk=student.pk %}" class="btn btn-sm btn-outline-danger" title="ลบ">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i> ยังไม่มีข้อมูลนักศึกษาในระบบ
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
